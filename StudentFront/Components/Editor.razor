@@ -1,0 +1,47 @@
+﻿@inject IJSRuntime JSRuntime;
+
+<div style="width:@EditorWidth; margin-right: auto; margin-left: auto">
+    <div id="@EditorId"></div>
+</div>
+
+@code {
+    [Parameter] public string EditorValue { get; set; } = string.Empty;
+    
+    [Parameter] public EventCallback<string> EditorValueChanged { get; set; }
+    
+    [Parameter] public string EditorHeight { get; set; } = string.Empty;
+    
+    [Parameter] public string EditorWidth { get; set; } = string.Empty;
+    
+    [Parameter] public bool IsReadOnly { get; set; }
+    
+    [Parameter] public string EditorId { get; set; } = Guid.NewGuid().ToString();
+
+    [Parameter] public string? UploadURL { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("CreateEditor",
+                EditorId, 
+                EditorValue, 
+                EditorHeight, 
+                IsReadOnly, 
+                UploadURL ?? "https://localhost:7292/api/Document/UploadImage",
+                DotNetObjectReference.Create(this));
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+
+    [JSInvokable]
+    public async Task OnEditorChanged(string data)
+    {
+        await EditorValueChanged.InvokeAsync(data);
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeVoidAsync("DestroyEditor", EditorId);
+    }
+}

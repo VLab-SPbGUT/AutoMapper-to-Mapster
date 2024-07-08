@@ -1,0 +1,45 @@
+﻿@using StudentFront.DTO.ContentDTO
+@using System.Text
+@inject HttpClient Client;
+
+
+@if (Content is not null && Content.Url != string.Empty && Document is not null)
+{
+    <Editor @bind-EditorValue="Document.Content" EditorHeight="400px" IsReadOnly="IsReadOnly"/>
+}
+else
+{
+    <span> something went wrong </span>
+}
+
+@code {
+    [Parameter, EditorRequired] public Content? Content { get; set; }
+
+    [Parameter] public bool IsReadOnly { get; set; }
+    
+    private string? Id { get; set;}
+    
+    private DocumentGetDTO? Document { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            if (Content is not null)
+            {
+                Document = await Client.GetFromJsonAsync<DocumentGetDTO>(Content.Url);
+
+                var builder = new StringBuilder();
+
+                builder.Append(Content.Url[^36..]);
+
+                Id = builder.ToString();
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+}

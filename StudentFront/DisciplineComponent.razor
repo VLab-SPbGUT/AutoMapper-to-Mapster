@@ -1,0 +1,43 @@
+﻿@using System.Net.Http
+@inject HttpClient HttpClient
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+@using System.Collections.Generic
+@inject NavigationManager Navigation
+@using Application.DTO
+
+
+
+<div class="block__items1">
+    @if (Disciplines is null)
+    {
+        <p class="none">Уроки отсутствуют.</p>
+    }
+    else
+    {
+        <div class="container">
+            @foreach (var discipline in Disciplines)
+            {
+                <div class="containerDiscipline">
+                <p class="disciplineName"> @discipline.Name </p>
+                <div class="buttonChoise"> <button @onclick="() => GoToDiscipline(discipline.Id.ToString())"> Выбрать </button> </div>
+                </div>
+                <hr class="line">
+            }
+
+        </div>
+    }
+    
+</div>
+
+
+@code {
+   [Parameter]
+    public List<DisciplineDTO>? Disciplines { get; set; } 
+
+    void GoToDiscipline(string Id)
+    {
+        Navigation.NavigateTo($"Discipline/{Id}");
+    }
+
+}

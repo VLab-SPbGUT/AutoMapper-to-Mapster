@@ -1,0 +1,184 @@
+﻿@page "/ExerciseBlockPage/{id}"
+@inject HttpClient HttpClient
+@using StudentFront.Components
+.@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+@using System.Collections.Generic
+@inject NavigationManager Navigation
+
+<p class="ButtonBack" @onclick="() => GoToLessonId(ExerciseBlock.LessonId.ToString())"> ❮  Назад </p>
+
+    <p class="NameVD">@Discipline?.Name</p>
+    <p class="NameVL">@Lesson?.Name</p>
+    <p class="NameVEB">@ExerciseBlock?.Name</p>
+
+<div class="containerView">
+<div class="paramVEB"> 
+        <p class="GeneralInfoVEB" @onclick="ShowInfo" style="@InfoStyle"> Общая информация </p>
+        <p class="TheoryVEB" @onclick="ShowTheoryVEB" style="@TheoryStyle"> Теоретическая часть </p>
+        <p class="ExerciseVEB" @onclick="ShowExerciseVEB" style="@ExerciseStyle"> Выполнение работы </p>
+</div>
+<hr class="lineView">
+</div>
+
+
+<div id="ContentInfoLesson">
+    @if (ShowGInfo && ExerciseBlock is not null)
+    {
+        <ContentComponent Content="@ExerciseBlock.GeneralInformation" IsReadOnly="@ExerciseBlock.GeneralInformation.ReadOnly"/>
+    }
+
+</div>
+
+
+<div id="ContentTheoryLesson">
+    @if (ShowTheory && ExerciseBlock is not null)
+    {
+        <ContentComponent Content="@ExerciseBlock.Theory" IsReadOnly="@ExerciseBlock.Theory.ReadOnly"/>
+    }
+</div>
+
+<div id="ContentWorkLesson">
+    @if (ShowExercise)
+    {
+        @if (Exercises is null)
+        {
+            <p>Данные не найдены</p>
+        }
+        else
+        {
+            <div class="container">
+                @foreach (var exercise in Exercises)
+                {
+                    <div class="ContainerExercise">
+                        @switch (exercise.Status)
+                        {
+                            case Status.Done:
+                                <span class="indicator1"> </span>
+                                break;
+
+                            case Status.NotStatred:
+                                <span class="indicator2"> </span>
+                                break;
+
+                            case Status.InProgress:
+                                <span class="indicator3"> </span>
+                                break;
+
+                            case Status.SentToRevision:
+                                <span class="indicator4"> </span>
+                                break;
+
+                        }
+                        <p class="ExerciseName"> @exercise.Name </p>
+
+                        @if (exercise.Mark is null)
+                        {
+                            <p class="LessonMark">Оценка: --</p>
+                        }
+                        else
+                        {
+                            <span class="LessonMark">Оценка: @exercise.Mark </span>
+                        }
+
+                        @if (exercise.CreditedTime is null)
+                        {
+                            <p class="LessonMark">Зачтенное время: --</p>
+                        }
+                        else
+                        {
+                            <span class="LessomCrTime">Зачтенное время: @exercise.CreditedTime</span>
+                        }
+                        <div class="ButtonChoiseExercise"> <button @onclick="() => GoToExerciseId(exercise.Id.ToString())"> Выбрать </button> </div>
+                    </div>
+                    <hr class="line">
+                }
+            </div>
+        }
+    }
+    
+</div>  
+
+
+@code {
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+    public ExerciseDTO? Exercise = new ExerciseDTO();
+    List<ExerciseDTO>? Exercises;
+
+    ExerciseBlockDTO? ExerciseBlock;
+    LessonDTO? Lesson;
+    DisciplineDTO? Discipline;
+
+    string LessId = "";
+    string InfoStyle = "";
+    string TheoryStyle = "";
+    string ExerciseStyle = "";
+    bool ShowGInfo = false;
+    bool ShowTheory = false;
+    bool ShowExercise = false;
+    bool ShowVariants = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ExerciseBlock = await HttpClient.GetFromJsonAsync<ExerciseBlockDTO>($"https://localhost:7234/api/ExerciseBlock/GetById/{id}");
+        Exercises = await HttpClient.GetFromJsonAsync<List<ExerciseDTO>>($"https://localhost:7234/api/Exercise/GetByExerciseBlockId/{id}");
+        string LessId = ExerciseBlock.LessonId.ToString();
+        Lesson = await HttpClient.GetFromJsonAsync<LessonDTO>($"https://localhost:7234/api/Lesson/GetById/{LessId}");
+        string DisId = Lesson.DisciplineId.ToString();
+        Discipline = await HttpClient.GetFromJsonAsync<DisciplineDTO>($"https://localhost:7234/api/Discipline/GetById/{DisId}");
+
+    }
+
+    void GoToLessonId(string LessonId)
+    {
+        Navigation.NavigateTo($"/LessonDetails/{LessonId}");
+
+    }
+
+    void GoToExerciseId(string Id)
+    {
+        Navigation.NavigateTo($"/ExercisePage/{Id}");
+
+    }
+
+    void ShowInfo()
+    {
+        InfoStyle = "background-color: #e6e6e6; border: 4px solid; border-color: #030349; margin-bottom: -3px;";
+        TheoryStyle = "";
+        ExerciseStyle = "";
+
+        ShowGInfo = true;
+        ShowTheory = false;
+        ShowExercise = false;
+        ShowVariants = false;
+    }
+
+    void ShowTheoryVEB()
+    {
+        InfoStyle = "";
+        TheoryStyle = "background-color: #e6e6e6; border: 4px solid; border-color: #030349; margin-bottom: -3px;";
+        ExerciseStyle = "";
+
+        ShowGInfo = false;
+        ShowTheory = true;
+        ShowExercise = false;
+        ShowVariants = false;
+    }
+
+    void ShowExerciseVEB()
+    {
+        InfoStyle = "";
+        TheoryStyle = "";
+        ExerciseStyle = "background-color: #e6e6e6; border: 4px solid; border-color: #030349; margin-bottom: -3px;";
+
+        ShowGInfo = false;
+        ShowTheory = false;
+        ShowExercise = true;
+        ShowVariants = false;
+    }
+}
+
+

@@ -1,0 +1,58 @@
+﻿@using StudentFront.DTO.ContentDTO
+@using System.Text
+@inject HttpClient Client;
+
+@if (Document is not null)
+{
+    <div>
+        <Editor EditorId="@Id" @bind-EditorValue="Document.Content" EditorHeight="400px" EditorWidth="95%" IsReadOnly="IsReadOnly"/>
+    </div>
+    <button style=" margin-right: 40px; margin-top: 10px; float: right" class="btn-primary" @onclick="SaveDocument">Сохранить</button>
+}
+else
+{
+    <span>Something went wrong</span>
+}
+
+@code {
+
+    [Parameter] public string? DocumentUrl { get; set; }
+
+    [Parameter] public bool IsReadOnly { get; set; }
+
+    [Parameter] public EventCallback ChangeStatus { get; set; }
+    
+    private string? Id { get; set;}
+    
+    private DocumentGetDTO? Document { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            Document = await Client.GetFromJsonAsync<DocumentGetDTO>(DocumentUrl);
+        }
+        catch{}
+
+        var builder = new StringBuilder();
+
+        builder.Append(DocumentUrl?[^36..]);
+
+        Id = builder.ToString();
+    }
+
+    private async Task SaveDocument()
+    {
+        DocumentPutDTO put = new DocumentPutDTO
+        {
+            Content = Document?.Content,
+            Description = Document?.Description
+        };
+
+        using var response = await Client
+            .PutAsJsonAsync($"https://localhost:7292/api/Document/Update/{Id}", put);
+
+        if (response.IsSuccessStatusCode)
+                await ChangeStatus.InvokeAsync();
+    }
+}

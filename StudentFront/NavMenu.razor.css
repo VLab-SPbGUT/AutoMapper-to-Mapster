@@ -1,0 +1,72 @@
+﻿
+.menu {
+    display: flex;
+}
+
+.logo {
+    margin-left: 3.8%;
+}
+
+.button__menu {
+    display: flex;
+}
+
+    .button__menu button {
+        background: none;
+        border: none;
+        padding: 0;
+        color: #000;
+        font-family: Roboto;
+        font-size: 32px;
+        font-style: normal;
+        line-height: normal;
+    }
+
+.items {
+    margin-left: 40%;
+    /*font-weight: 700;
+    text-decoration-line: underline;
+    text-decoration: underline solid #FFB703;
+    text-underline-offset: 10px;*/
+}
+
+.portfolio {
+    margin-left: 50%;
+}
+
+.student {
+    color: #00004d;
+    font-family: Roboto;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    margin-left: 25%;
+    margin-top: 35px;
+}
+
+.account__menu {
+    margin-left: 26px;
+}
+
+.line__menu {
+    margin: 20px 0;
+    padding: 0;
+    height: 0;
+    border: none;
+    border-top: 3px solid #0D3959;
+}
+
+
+@media (min-widht: 1200px) and (max-widht: 1921px) {
+   .menu{
+       display: block;
+   }
+}
+
+
+@media (min-widht: 960px) and (max-widht: 1200px) {
+    .menu {
+        display: none;
+    }
+}

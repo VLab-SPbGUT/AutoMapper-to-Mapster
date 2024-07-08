@@ -1,0 +1,231 @@
+﻿@page "/ExercisePage/{id}"
+@inject HttpClient HttpClient
+
+@using StudentFront.Components
+@inject NavigationManager Navigation
+
+<div id="ContentWorkLesson">
+    <button class="BackExerciseBlock" @onclick="() => GoToExerciseBlockId(Exercise.ExerciseBlockId.ToString())">
+        <p> ❮  К списку заданий </p>
+    </button>
+
+    <div class="ContainerExercise">
+        @switch (Exercise?.Status)
+        {
+            case Status.Done:
+                <span class="indicator1"> </span>
+                break;
+
+            case Status.NotStatred:
+                <span class="indicator2"> </span>
+                break;
+
+            case Status.InProgress:
+                <span class="indicator3"> </span>
+                break;
+
+            case Status.SentToRevision:
+                <span class="indicator4"> </span>
+                break;
+
+        }
+        <p class="ExerciseName"> @Exercise?.Name </p>
+
+        @if (Exercise?.CreditedTime is null)
+        {
+            <p class="LessonMark">Зачтенное время: --</p>
+        }
+        else
+        {
+            <span class="LessomCrTime">Зачтенное время: @Exercise?.CreditedTime</span>
+        }
+
+        @if (Exercise?.Mark is null)
+        {
+            <p class="LessonMark">Оценка: --</p>
+        }
+        else
+        {
+            <span class="LessonMark">Оценка: @Exercise?.Mark </span>
+        }   
+    </div>
+
+    <div class="ShowTask"  onclick="ShowTask()"> 
+        <div class="PositionElem"><div id="elemTask" >▼</div></div>
+        <button class="ExampleTitle" id="testTask">    Задание </button>
+    </div>
+
+    <div class="Example" id="informerTask">
+        <ContentComponent Content="@Exercise?.MethodicalInstructions" IsReadOnly="true"/>
+    </div>
+    
+    <div class="ShowExam" onclick="ShowExample()">
+        <div class="PositionElem"><div id="elem">▼</div></div>
+        <button class="ExampleTitle" id="test">    Пример </button>
+    </div>
+
+
+    <div class="Example" id="informer">
+        <ContentComponent Content="@Exercise?.Example" IsReadOnly="true"/>
+    </div>
+
+    <div>
+        @switch (Exercise?.Answers[0].AnswerFormat)
+        {
+            case AnswerFormat.InputForm:
+                <span> <DefaultEditor 
+                           DocumentUrl = "@Exercise.Answers[0].Answer.Url" 
+                           IsReadOnly="@false" 
+                           ChangeStatus="ChangeExerciseStatus"/>
+                    </span>
+                break;
+            case AnswerFormat.OneFile:
+                <span>One file</span>
+                break;
+            case AnswerFormat.MultipleFile:
+                <span>Multiple file</span>
+                break;
+            case null:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $('#test').on('click', function () {
+            $('#elem').toggleClass('transform');
+        });
+    });
+
+    $(function () {
+        $('#testTask').on('click', function () {
+            $('#elemTask').toggleClass('transform');
+        });
+    });
+
+</script>
+
+<script>
+     function ShowExample() {
+        var className = informer.className;
+        if (className.indexOf(' expanded') == -1) {
+            className += ' expanded';
+        }
+        else {
+            className = className.replace(' expanded', '');
+        }
+        informer.className = className;
+        return false;
+
+    };
+
+    function ShowTask() {
+        var className = informerTask.className;
+        if (className.indexOf(' expanded') == -1) {
+            className += ' expanded';
+        }
+        else {
+            className = className.replace(' expanded', '');
+        }
+        informerTask.className = className;
+        return false;
+
+    };
+</script>
+
+<script>
+    let ContentInfo = document.getElementById('ContentInfoLesson');
+    let ContentTheory = document.getElementById('ContentTheoryLesson')
+    let ContentWork = document.getElementById('ContentWorkLesson')
+
+    let InfoColor = document.getElementById('InfoColor')
+    let TheoryColor = document.getElementById('TheoryColor')
+    let WorkColor = document.getElementById('WorkColor')
+
+    let TextInfo = document.getElementById('TextInfo')
+    let TextTheory = document.getElementById('TextTheory')
+    let TextWork = document.getElementById('TextWork')
+
+    function ShowInfo() {
+        ContentInfo.style.display = 'block';
+        ContentTheory.style.display = 'none';
+        ContentWork.style.display = 'none';
+
+        InfoColor.style.backgroundColor = '#00004d'
+        TheoryColor.style.backgroundColor = '#fff'
+        WorkColor.style.backgroundColor = '#fff'
+
+        TextInfo.style.color = "#fff"
+        TextTheory.style.color = "#000"
+        TextWork.style.color = "#000"
+
+    }
+
+    function ShowTheory() {
+        ContentInfo.style.display = 'none';
+        ContentTheory.style.display = 'block';
+        ContentWork.style.display = 'none';
+
+        InfoColor.style.backgroundColor = '#fff'
+        TheoryColor.style.backgroundColor = '#00004d'
+        WorkColor.style.backgroundColor = '#fff'
+
+        TextInfo.style.color = "#000"
+        TextTheory.style.color = "#fff"
+        TextWork.style.color = "#000"
+    }
+
+    function ShowWork() {
+        ContentInfo.style.display = 'none';
+        ContentTheory.style.display = 'none';
+        ContentWork.style.display = 'block';
+
+        InfoColor.style.backgroundColor = '#fff'
+        TheoryColor.style.backgroundColor = '#fff'
+        WorkColor.style.backgroundColor = '#00004d'
+
+        TextInfo.style.color = "#000"
+        TextTheory.style.color = "#000"
+        TextWork.style.color = "#fff"
+    }
+
+</script>
+
+
+@code {
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+
+
+    ExerciseDTO? Exercise;
+    ExerciseBlockDTO? ExerciseBlock;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Exercise = await HttpClient.GetFromJsonAsync<ExerciseDTO>($"https://localhost:7234/api/Exercise/GetById/{id}");
+        ExerciseBlock = await HttpClient.GetFromJsonAsync<ExerciseBlockDTO>($"https://localhost:7234/api/ExerciseBlock/GetById/{Exercise?.ExerciseBlockId}");
+    }
+
+    void GoToLessonId(string LessonId)
+    {
+        Navigation.NavigateTo($"/LessonDetails/{LessonId}");
+
+    }
+
+    void GoToExerciseBlockId(string ExerciseBlockId)
+    {
+        Navigation.NavigateTo($"/ExerciseBlockPage/{ExerciseBlockId}");
+    }
+
+    public async Task ChangeExerciseStatus()
+    {
+        Exercise.Status = Status.SentToRevision;
+        
+        using var response = await HttpClient
+            .PutAsJsonAsync($"https://localhost:7234/api/Exercise/Update/{Exercise.Id}", Exercise);
+    }
+}

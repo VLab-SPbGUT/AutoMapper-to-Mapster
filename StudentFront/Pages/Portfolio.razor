@@ -1,0 +1,45 @@
+﻿@page "/Portfolio"
+
+@inject HttpClient HttpClient
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+@using System.Collections.Generic
+@inject NavigationManager Navigation
+
+<NavMenu></NavMenu>
+
+<h3>Выполненные задания</h3>
+<div class="choiseDiscipline">
+    <h4>Дисциплина:</h4>
+    <button @onclick="ChoiseOneDiscipline"> Выбрать </button>
+
+</div>
+
+<div class="content">
+    <div class="type"> <p> Тип задания </p> </div>
+    <div class="name"> <p> Название </p> </div>
+    <div class="number"> <p> Номер </p> </div>
+    <div class="comment"><p>Комментарии</p></div>
+    <div class="status"><p>Статус</p></div>
+    <div class="estimation"><p>Оценка </p></div>
+</div>
+
+<hr class="line__menu">
+
+@code {
+    bool ShowContentDP { get; set; } = false; 
+
+    void ChoiseOneDiscipline()
+    {
+        ShowContentDP = true;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Disciplines = await HttpClient.GetFromJsonAsync<List<DisciplineDTO>>("https://localhost:7234/api/Discipline/GetAll");
+
+    }
+    List<DisciplineDTO>? Disciplines;
+}

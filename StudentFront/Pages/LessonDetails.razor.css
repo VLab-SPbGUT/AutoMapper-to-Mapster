@@ -1,0 +1,129 @@
+﻿
+.back {
+    display: flex;
+    margin-left: 5.2%;
+
+    margin-top: 2%;
+}
+
+.TitleLesson {
+    color: #00004d;
+    font-family: Roboto;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-left: 50%;
+}
+
+.InfoSVG{
+    margin: 13px;
+}
+
+.LessonInfo {
+    display: flex;
+    color: #000;
+    font-family: Roboto;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.indicator1, .indicator2, .indicator3, .indicator4, .LessonNumber, .LessonMark, .LessomCrTime{
+    margin-left: 10%;
+}
+
+button {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.indicator1, .indicator2, .indicator3, .indicator4 {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.indicator1 {
+    background: #8FDA62;
+}
+
+.indicator2 {
+    background: #F46666;
+}
+
+.indicator3 {
+    background: #0000ff;
+}
+
+.indicator4 {
+    background: #FFB703;
+}
+
+.lineInfo {
+    margin: 20px 0;
+    padding: 0;
+    height: 0;
+    border: none;
+    border-top: 3px solid #00004d;
+}
+
+.work {
+    display: flex;
+    color: #000;
+    font-family: Roboto;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.work__name {
+    margin-left: 5.6%;
+    width: 500px;
+    margin-top: 20px;
+}
+
+.MarkExBlock {
+    margin-top: 20px;
+}
+
+.button__proceed {
+    padding: 0;
+    border-radius: 30px;
+    width: 123px;
+    height: 39px;
+    border-color: #00004d;
+    background-color: #00004d;
+    color: #FFF;
+    text-align: center;
+    font-family: Roboto;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.button__position {
+    margin-left: 33.4%;
+    margin-top: 20px;
+}
+
+.line__works {
+    margin: 10px 0;
+    padding: 0;
+    height: 0;
+    border: none;
+    border-top: 3px solid #00004d;
+    width: 1273px;
+    margin-left: 5.5%;
+}
+
+
+.expanded {
+    max-height: 100px;
+    opacity: 1;
+    _display: block;
+}

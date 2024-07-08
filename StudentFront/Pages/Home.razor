@@ -1,0 +1,23 @@
+﻿@page "/"
+@using System.Net.Http
+@inject HttpClient HttpClient
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+@using System.Collections.Generic
+
+
+<PageTitle>Предметы</PageTitle>
+
+<NavMenu></NavMenu>
+
+ <DisciplineComponent Disciplines="Disciplines"></DisciplineComponent> 
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        Disciplines = await HttpClient.GetFromJsonAsync<List<DisciplineDTO>>("https://localhost:7234/api/Discipline/GetAll");
+
+    }
+
+    List<DisciplineDTO>? Disciplines;
+}

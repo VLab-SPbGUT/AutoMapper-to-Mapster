@@ -1,0 +1,95 @@
+﻿@page "/Discipline/{id}"
+@inject HttpClient HttpClient
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+@using System.Collections.Generic
+@inject NavigationManager Navigation
+
+<NavMenu></NavMenu>
+
+<h1 class="title__items"> @Discipline?.Name </h1>
+
+<div class="back">
+    <button @onclick="GoToMain">
+        <p class="back__button"> ❮  Назад </p>
+    </button>
+</div>
+
+<div class="works">
+    <h3 class="name__work"> Название модуля </h3>
+    <h3 class="status__work"> Статус выполнения </h3>
+</div>
+ 
+@if (Lessons is null)
+{
+    <p> Уроки отсутствуют </p>
+}
+
+else
+{
+    @foreach (var lesson in Lessons)
+    {
+        <div class="work">
+            <p class="work__name"> @lesson.Name </p>
+            @switch (lesson.Status)
+            {
+                case Status.Done:
+                    <span class="indicator1"></span> 
+                    <p class="work__status"> Выполнено </p>
+                    break;
+
+                case Status.NotStatred:
+                    <span class="indicator2"> </span>
+                    <p class="work__status"> Не начато </p>
+                    break;
+
+                case Status.InProgress:
+                    <span class="indicator3"> </span>
+                    <p class="work__status"> В прогрессе </p>
+                    break;
+
+                case Status.SentToRevision:
+                    <span class="indicator4"> </span>
+                    <p class="work__status"> На проверки </p>
+                    break;
+
+            }
+            <div class="button__position">
+                <button class="button__proceed" @onclick="() => GoToLessonDetails(lesson.Id.ToString())"> <p> Перейти </p> </button>
+            </div>
+        </div>
+
+        <hr class="line__works">
+    }
+}
+
+
+
+@code {
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+
+    DisciplineDTO? Discipline;
+
+    List<LessonDTO>? Lessons;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Lessons = await HttpClient.GetFromJsonAsync<List<LessonDTO>>($"https://localhost:7234/api/Lesson/GetByDisciplineId/{id}");
+        Discipline = await HttpClient.GetFromJsonAsync<DisciplineDTO>($"https://localhost:7234/api/Discipline/GetById/{id}");
+
+    }
+
+
+     void GoToMain()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    void GoToLessonDetails(string id)
+    {
+        Navigation.NavigateTo($"LessonDetails/{id}");
+    }
+}

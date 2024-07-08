@@ -1,0 +1,43 @@
+﻿@using System.Net.Http
+@inject HttpClient HttpClient
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+@using System.Collections.Generic
+@inject NavigationManager Navigation
+
+
+<div class="NavMenu">
+    <div class="menu">
+        
+        <img src="/Images/logo.png" aps-append-version="true" alt="Логотип" width="10%" class="logo" />
+        <div class="button__menu">
+            <button class="items" @onclick="GoToMain" style="font-weight:@weightItems"> Предмет </button>
+            <button class="portfolio" @onclick="GoToPortfolio" style="font-weight:@weightPortfolio"> Портфолио </button>
+        </div>
+        <p class="student"> Горшков Павел Дмитриевич </p>
+        <img src="/Images/account_circle.png" aps-append-version="true" alt="Аккаунт" width="104px" class="account__menu" />
+    </div>
+
+    <hr class="line__menu">
+
+
+</div>
+
+@code{
+    int weightItems = 700;
+    int weightPortfolio = 0;
+
+    void GoToMain(){
+        Navigation.NavigateTo("/");
+
+        weightItems = 700;
+        weightPortfolio = 0;
+    }
+
+    void GoToPortfolio(){
+        Navigation.NavigateTo("Portfolio");
+
+        weightItems = 0;
+        weightPortfolio = 700;
+    }
+}

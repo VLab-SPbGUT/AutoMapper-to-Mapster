@@ -1,0 +1,156 @@
+﻿
+* {
+    font-family: Roboto;
+    font-style: normal;
+    line-height: normal;
+}
+
+.ButtonBack {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    margin-left: 5%;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.sections {
+    font-family: Roboto;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+
+    margin-top: 15px;
+}
+
+.info {
+    border-radius: 19px;
+    width: 313px;
+    margin-left: 100px;
+}
+
+.NameVD {
+    font-size: 40px;
+    font-weight: 100;
+    text-align: center;
+    color: #030349;
+    margin-bottom: 0px;
+}
+
+.NameVL {
+    font-size: 32px;
+    font-weight: 100;
+    text-align: center;
+    color: #030349;
+    margin: 0px;
+}
+
+.NameVEB {
+    font-size: 30px;
+    font-weight: 100;
+    text-align: center;
+    color: #030349;
+    margin: 0px;
+}
+
+.containerView {
+    margin-left: 5%;
+    margin-top: 30px;
+    width: 88.8%;
+}
+
+.GeneralInfoVEB, .TheoryVEB, .ExerciseVEB {
+    width: 50%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.paramVEB {
+    display: flex;
+    font-size: 24px;
+    margin-top: 20px;
+}
+
+.backbutton {
+    margin-top: 20px;
+    margin-left: 30px;
+    margin-bottom: 0px;
+    background: none;
+    border: none;
+    color: #000;
+}
+
+.LessonNumber, .LessonMark, .LessomCrTime {
+    margin-left: 15%;
+    margin-top: 5px;
+}
+
+.indicator1, .indicator2, .indicator3, .indicator4 {
+    margin-right: 20px;
+    margin-top: 4px;
+}
+
+.indicator1, .indicator2, .indicator3, .indicator4 {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.indicator1 {
+    background: #8FDA62;
+}
+
+.indicator2 {
+    background: #F46666;
+}
+
+.indicator3 {
+    background: #0000ff;
+}
+
+.indicator4 {
+    background: #FFB703;
+}
+
+.ContainerExercise {
+    display: flex;
+    color: #000;
+    text-align: center;
+    font-family: Roboto;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.ExerciseName {
+    margin-top: 5px;
+}
+
+.container {
+    margin-left: 3.8%;
+}
+
+button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #fff;
+}
+
+.ButtonChoiseExercise {
+    background-color: #00004d;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    border-radius: 30px;
+    width: 123px;
+    height: 39px;
+    position: absolute;
+    right: 100px;
+}
+
+.lineView{
+    margin-top:0px;
+}

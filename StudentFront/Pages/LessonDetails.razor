@@ -1,0 +1,175 @@
+﻿@page "/LessonDetails/{id}"
+@inject HttpClient HttpClient
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+@using System.Collections.Generic
+@inject NavigationManager Navigation
+
+
+@if (Lesson is null)
+{
+    <p> Данные не найдены </p>
+}
+
+else
+{
+    <div class="back">
+        <button @onclick="() => GoToDisciplineId(Lesson.DisciplineId.ToString())">
+            <p class="back__button"> ❮  Назад </p>
+        </button>
+
+        <h1 class="TitleLesson"> @Lesson?.Name </h1>
+
+        <style>
+
+            #Hint {
+                visibility: hidden;
+                position: absolute;
+                left: 840px;
+                top: 80px;
+
+                border-style: solid;
+                border-color: #000;
+                border-width: 1px;
+
+                width: 400px;
+                background-color: #fff;
+                padding: 3px;
+                z-Index: 3
+            }
+        </style>
+
+        <div id="Hint">
+            <p> @Lesson?.CreditedTime </p>
+            <p> @Lesson?.MarkType </p>
+            <p> @Lesson?.Theory  </p>
+        </div>
+
+        <div class="InfoSVG" onmousemove="movePic()" onmouseout="hidePic()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" color="#219EBC" class="bi bi-info-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" /> 
+                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" /> 
+            </svg>
+        </div>
+
+    </div>
+
+    <div id="WorkId">
+    <div class="LessonInfo">
+        @switch (Lesson?.Status)
+        {
+            case Status.Done:
+                <span class="indicator1"> </span>
+                break;
+
+            case Status.NotStatred:
+                <span class="indicator2"> </span>
+                break;
+
+            case Status.InProgress:
+                <span class="indicator3"> </span>
+                break;
+
+            case Status.SentToRevision:
+                <span class="indicator4"> </span>
+                break;
+
+        }
+
+        <span class="LessonNumber">Номер занятия: @Lesson.LessonNumber</span>
+
+        @if (Lesson.Mark is null)
+        {
+            <p class="LessonMark">Оценка: --</p>
+        }
+        else
+        {
+            <span class="LessonMark">Оценка: @Lesson.Mark </span>
+        }
+
+        @if (Lesson.Mark is null)
+        {
+            <p class="LessonMark">Зачтенное время: --</p>
+        }
+        else
+        {
+            <span class="LessomCrTime">Зачтенное время: @Lesson.CreditedTime</span>
+        }
+        
+    </div>
+    <hr class="lineInfo">
+
+    @if (ExerciseBlocks is null)
+    {
+        <p> Задания отсутствуют </p>
+    }
+    else
+    {
+
+   @foreach (var ExBlock in ExerciseBlocks)
+       {
+          <div class="work">
+                <p class="work__name"> @ExBlock?.Name </p>
+
+                <p class="MarkExBlock"> Оценка: @ExBlock?.Mark</p>
+                <div class="button__position">
+                        <button class="button__proceed" id="ClickHide" @onclick="() => GoToExerciseBlockId(ExBlock.Id.ToString())"> <p>Начать</p> </button>
+                </div>
+            </div>
+
+            <hr class="line__works"> 
+        }
+    }
+    </div>
+}
+
+<script>
+    var hide = true;
+    function movePic() {
+        if (hide) {
+            Hint.style.visibility = "visible"
+            hide = false
+        }
+    }
+    function hidePic() {
+        Hint.style.visibility = "hidden"
+        hide = true
+    }
+
+
+    
+</script>
+
+@code {
+    [Parameter]
+    public string id { get; set; } = string.Empty;
+
+    public LessonDTO? Lesson = new LessonDTO();
+    public ExerciseBlockDTO? ExerciseBlock = new ExerciseBlockDTO();
+
+    List<ExerciseBlockDTO>? ExerciseBlocks;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Lesson = await HttpClient.GetFromJsonAsync<LessonDTO>($"https://localhost:7234/api/Lesson/GetById/{id}");
+        ExerciseBlocks = await HttpClient.GetFromJsonAsync<List<ExerciseBlockDTO>>($"https://localhost:7234/api/ExerciseBlock/GetByLessonId/{id}");
+    }
+
+
+
+    void GoToDisciplineId(string DisciplineId)
+    {
+        Navigation.NavigateTo($"/Discipline/{DisciplineId}");
+
+    }
+
+    void GoToExerciseBlockId(string id)
+    {
+        Navigation.NavigateTo($"/ExerciseBlockPage/{id}");
+    }
+
+}
